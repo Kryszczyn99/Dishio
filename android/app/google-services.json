@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "452011835045",
+    "project_id": "dishio-c3d91",
+    "storage_bucket": "dishio-c3d91.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452011835045:android:8260deb970a916c8ee974c",
+        "android_client_info": {
+          "package_name": "com.example.dishio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "452011835045-jc2ukmvaer5tpk6hnoh7rbp8cb1rd1r8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvnyyfy1GJjULNUFVy1g6lgN5B-05KgJA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "452011835045-jc2ukmvaer5tpk6hnoh7rbp8cb1rd1r8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
