@@ -8,11 +8,10 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('usersTable');
 
 //#1
-  Future setUserInformation(
-      String name, String uid, String email, String surname) async {
+  Future setUserInformation(String uid, String email) async {
     return await userCollection.doc(uid).set({
-      'name': name,
-      'surname': surname,
+      'name': "",
+      'surname': "",
       'userId': uid,
       'email': email,
       'role': 'user',

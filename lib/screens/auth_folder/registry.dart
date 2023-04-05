@@ -18,18 +18,12 @@ class _RegisterState extends State<Register> {
   String pass = '';
   String pass2 = '';
   String err = '';
-  String name = '';
-  String surname = '';
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      decoration: const BoxDecoration(
-          image: DecorationImage(
-        image: AssetImage('assets/images/layout_circular.png'),
-        fit: BoxFit.fill,
-      )),
+      color: MyColors.color10,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Container(
@@ -48,30 +42,32 @@ class _RegisterState extends State<Register> {
                       width: 230.0,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('assets/images/logo.png'),
-                          fit: BoxFit.fill,
+                          image: AssetImage('assets/images/dish-icon.png'),
                         ),
-                        shape: BoxShape.circle,
                       ),
                     ),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
                     const Text(
-                      "Childvents",
+                      "Dishio",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                         fontSize: 42,
                       ),
                     ),
+                    const Divider(
+                      color: Colors.white,
+                      height: 45,
+                      thickness: 2,
+                      indent: 25,
+                      endIndent: 25,
+                    ),
                     const SizedBox(
-                      height: 50.0,
+                      height: 20.0,
                     ),
                     TextFormField(
                       style: TextStyle(color: Colors.white, fontSize: 20),
                       decoration: InputDecoration(
                         hintStyle: TextStyle(color: Colors.white, fontSize: 20),
-                        fillColor: MyColors.color3.withOpacity(0.4),
+                        fillColor: MyColors.color6.withOpacity(0.7),
                         filled: true,
                         contentPadding: EdgeInsets.only(left: 20, top: 15),
                         hintText: 'Email',
@@ -91,7 +87,7 @@ class _RegisterState extends State<Register> {
                       style: TextStyle(color: Colors.white, fontSize: 20),
                       decoration: InputDecoration(
                         hintStyle: TextStyle(color: Colors.white, fontSize: 20),
-                        fillColor: MyColors.color3.withOpacity(0.4),
+                        fillColor: MyColors.color6.withOpacity(0.7),
                         filled: true,
                         contentPadding: EdgeInsets.only(left: 20, top: 15),
                         hintText: 'Password',
@@ -113,7 +109,7 @@ class _RegisterState extends State<Register> {
                       style: TextStyle(color: Colors.white, fontSize: 20),
                       decoration: InputDecoration(
                         hintStyle: TextStyle(color: Colors.white, fontSize: 20),
-                        fillColor: MyColors.color3.withOpacity(0.4),
+                        fillColor: MyColors.color6.withOpacity(0.7),
                         filled: true,
                         contentPadding: EdgeInsets.only(left: 20, top: 15),
                         hintText: 'Confirm password',
@@ -135,46 +131,6 @@ class _RegisterState extends State<Register> {
                       },
                     ),
                     const SizedBox(
-                      height: 40.0,
-                    ),
-                    TextFormField(
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                      decoration: InputDecoration(
-                        hintStyle: TextStyle(color: Colors.white, fontSize: 20),
-                        fillColor: MyColors.color3.withOpacity(0.4),
-                        filled: true,
-                        contentPadding: EdgeInsets.only(left: 20, top: 15),
-                        hintText: 'Name',
-                        suffixIcon:
-                            Icon(Icons.person, color: Colors.white, size: 25.0),
-                      ),
-                      validator: (val) =>
-                          val!.isEmpty ? 'Enter your name' : null,
-                      onChanged: (val) {
-                        setState(() => name = val);
-                      },
-                    ),
-                    const SizedBox(
-                      height: 40.0,
-                    ),
-                    TextFormField(
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                      decoration: InputDecoration(
-                        hintStyle: TextStyle(color: Colors.white, fontSize: 20),
-                        fillColor: MyColors.color3.withOpacity(0.4),
-                        filled: true,
-                        contentPadding: EdgeInsets.only(left: 20, top: 15),
-                        hintText: 'Surname',
-                        suffixIcon:
-                            Icon(Icons.person, color: Colors.white, size: 25.0),
-                      ),
-                      validator: (val) =>
-                          val!.isEmpty ? 'Enter your surname' : null,
-                      onChanged: (val) {
-                        setState(() => surname = val);
-                      },
-                    ),
-                    const SizedBox(
                       height: 20,
                     ),
                     Text(
@@ -186,14 +142,16 @@ class _RegisterState extends State<Register> {
                     ),
                     ElevatedButton(
                       style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll<Color>(MyColors.color6),
                           minimumSize: MaterialStateProperty.all(Size(140, 35)),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30.0)))),
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          dynamic resValue = await authService.registerUser(
-                              email, pass, name, surname);
+                          dynamic resValue =
+                              await authService.registerUser(email, pass);
                           if (resValue == null) {
                             setState(
                                 () => err = 'Give valid email or password');
