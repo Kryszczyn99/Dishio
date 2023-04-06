@@ -1,3 +1,4 @@
+import 'package:dishio/navbars/hamburgermenu.dart';
 import 'package:dishio/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,7 +18,8 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MyColors.color3,
+      drawer: HamburgerMenu(),
+      backgroundColor: MyColors.color10,
       appBar: AppBar(
         bottom: PreferredSize(
           child: Container(
@@ -26,29 +28,11 @@ class _HomeState extends State<Home> {
           ),
           preferredSize: Size.fromHeight(4.0),
         ),
-        backgroundColor: MyColors.color5,
+        backgroundColor: MyColors.color6,
         elevation: 0.0,
         centerTitle: true,
-        leadingWidth: 60,
-        actions: <Widget>[
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              primary: MyColors.color5,
-            ),
-            onPressed: () async {
-              Navigator.of(context).popUntil((route) => route.isFirst);
-              await auth.signOut();
-              //scheduleNotificationsTest();
-            },
-            icon: Icon(
-              Icons.person,
-              color: Colors.white,
-            ),
-            label: Text('logout', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-        title: Text(
-          "Home",
+        title: const Text(
+          "Dishio",
           style: TextStyle(fontSize: 34, fontStyle: FontStyle.italic),
         ),
       ),
