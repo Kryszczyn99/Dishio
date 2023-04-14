@@ -1,3 +1,5 @@
+import 'package:dishio/screens/home/home.dart';
+import 'package:dishio/screens/profile/editing.dart';
 import 'package:dishio/services/auth.dart';
 import 'package:dishio/style/colors.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dishio/screens/home/home.dart';
+import 'package:dishio/screens/profile/profile.dart';
 import 'package:dishio/services/auth.dart';
 import 'package:dishio/services/database.dart';
 import 'package:dishio/storage/firebasestorageapi.dart';
@@ -40,24 +41,11 @@ class HamburgerMenu extends StatelessWidget {
                     accountEmail: Text("${user.get('email')}"),
                     currentAccountPicture: CircleAvatar(
                       child: ClipOval(
-                        child: FutureBuilder(
-                          future: _getImage(context,
-                              "${FirebaseAuth.instance.currentUser!.uid}"),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<Widget> snapshot) {
-                            if (snapshot.data.toString() == "Scaffold") {
-                              return Image.asset(
-                                'assets/images/person.png',
-                                width: 90,
-                                height: 90,
-                                fit: BoxFit.fill,
-                              );
-                            } else {
-                              return Container(
-                                child: snapshot.data,
-                              );
-                            }
-                          },
+                        child: Image.asset(
+                          'assets/images/person.png',
+                          width: 90,
+                          height: 90,
+                          fit: BoxFit.fill,
                         ),
                       ),
                     ),
@@ -82,7 +70,13 @@ class HamburgerMenu extends StatelessWidget {
                     leading: Icon(Icons.person),
                     title: Text("Profile"),
                     onTap: () async {
-                      print("test");
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfileView(),
+                        ),
+                      );
                     },
                   ),
                   ListTile(
@@ -101,22 +95,5 @@ class HamburgerMenu extends StatelessWidget {
             return Container();
           }
         });
-  }
-
-  Future<Widget> _getImage(BuildContext context, String imageName) async {
-    late Image image;
-    try {
-      await FirebaseApi.loadImage(context, imageName).then((value) {
-        image = Image.network(
-          value.toString(),
-          width: 90,
-          height: 90,
-          fit: BoxFit.fill,
-        );
-      });
-    } catch (err) {
-      return Scaffold();
-    }
-    return image;
   }
 }

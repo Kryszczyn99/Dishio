@@ -1,3 +1,4 @@
+import 'package:dishio/screens/splash/animatedsplashscreen.dart';
 import 'package:dishio/services/auth.dart';
 import 'package:dishio/wrapper.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       value: AuthService().user,
       initialData: null,
       child: const MaterialApp(
-        home: Wrapper(),
+        home: SplashScreen(),
       ),
     );
   }
