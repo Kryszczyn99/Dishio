@@ -80,6 +80,19 @@ class HamburgerMenu extends StatelessWidget {
                     },
                   ),
                   ListTile(
+                    leading: Icon(Icons.search),
+                    title: Text("Search"),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfileView(),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
                     leading: Icon(Icons.logout),
                     title: Text("Log out"),
                     onTap: () async {

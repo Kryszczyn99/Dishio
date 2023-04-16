@@ -6,6 +6,8 @@ class DatabaseService {
   DatabaseService({required this.uid});
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('usersTable');
+  final CollectionReference categoryCollection =
+      FirebaseFirestore.instance.collection('categoriesTable');
 
 //#1
   Future setUserInformation(String uid, String email) async {
@@ -34,5 +36,10 @@ class DatabaseService {
   Future deleteUserFromDB(String uid) async {
     await userCollection.doc(uid).delete();
     return true;
+  }
+
+//#4
+  Future getAllCategories() async {
+    return await categoryCollection.get();
   }
 }
