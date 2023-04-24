@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dishio/navbars/hamburgermenu.dart';
+import 'package:dishio/screens/recipe_adding/recipe_adding.dart';
 import 'package:dishio/services/auth.dart';
 import 'package:dishio/services/database.dart';
 import 'package:flutter/material.dart';
@@ -32,13 +33,6 @@ class _HomeState extends State<Home> {
       drawer: HamburgerMenu(),
       backgroundColor: MyColors.color10,
       appBar: AppBar(
-        bottom: PreferredSize(
-          child: Container(
-            color: Colors.white,
-            height: 1.0,
-          ),
-          preferredSize: Size.fromHeight(4.0),
-        ),
         backgroundColor: MyColors.color6,
         elevation: 0.0,
         centerTitle: true,
@@ -46,6 +40,20 @@ class _HomeState extends State<Home> {
           "Dishio",
           style: TextStyle(fontSize: 34, fontStyle: FontStyle.italic),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RecipeAdd(),
+                ),
+              );
+            },
+            color: Colors.white,
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -103,6 +111,153 @@ class _HomeState extends State<Home> {
                             }).toList(),
                           );
                         }),
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                          flex: 3,
+                          child: Container(
+                            width: double.infinity,
+                            height: 200,
+                            color: Colors.red,
+                          )),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          color: Colors.white,
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: Text(
+                                  "Barszcz biały z kiełbasą",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Text(
+                                  "~50min",
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 30,
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                          flex: 3,
+                          child: Container(
+                            width: double.infinity,
+                            height: 200,
+                            color: Colors.red,
+                          )),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          color: Colors.white,
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: Text(
+                                  "Barszcz biały z kiełbasą",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Text(
+                                  "~50min",
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 30,
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                          flex: 3,
+                          child: Container(
+                            width: double.infinity,
+                            height: 200,
+                            color: Colors.red,
+                          )),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          color: Colors.white,
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: Text(
+                                  "Barszcz biały z kiełbasą",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Text(
+                                  "~50min",
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
