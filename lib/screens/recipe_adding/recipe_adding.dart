@@ -70,9 +70,10 @@ class _RecipeAddState extends State<RecipeAdd> {
                           padding: EdgeInsets.symmetric(horizontal: 12.0),
                           width: 400,
                           decoration: BoxDecoration(
+                            color: Colors.white,
                             border: Border.all(
                               color: Colors.grey,
-                              width: 1.0,
+                              width: 2.0,
                             ),
                             borderRadius: BorderRadius.circular(3.0),
                           ),
@@ -114,6 +115,14 @@ class _RecipeAddState extends State<RecipeAdd> {
                         SizedBox(height: 20),
                         Container(
                           width: 400,
+                          decoration: BoxDecoration(
+                            color: Colors.white, // ustawienie białego tła
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(3.0),
+                          ),
                           child: TextFormField(
                             keyboardType: TextInputType.number,
                             inputFormatters: [
@@ -142,6 +151,14 @@ class _RecipeAddState extends State<RecipeAdd> {
                         SizedBox(height: 20),
                         Container(
                           width: 400,
+                          decoration: BoxDecoration(
+                            color: Colors.white, // ustawienie białego tła
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(3.0),
+                          ),
                           child: TextFormField(
                             keyboardType: TextInputType.multiline,
                             maxLines: null,
