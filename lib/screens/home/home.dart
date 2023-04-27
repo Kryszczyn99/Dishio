@@ -125,7 +125,8 @@ class _HomeState extends State<Home> {
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
-                                                        RecipeDetails(),
+                                                        RecipeDetails(
+                                                            id: document.id),
                                                   ),
                                                 );
                                               },
@@ -229,7 +230,8 @@ class _HomeState extends State<Home> {
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
-                                                        RecipeDetails(),
+                                                        RecipeDetails(
+                                                            id: document.id),
                                                   ),
                                                 );
                                               },

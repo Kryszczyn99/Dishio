@@ -1,12 +1,19 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dishio/screens/profile/editing.dart';
 import 'package:dishio/style/profileButtonDecoration.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../services/auth.dart';
 import '../../services/database.dart';
+import '../../services/firebasestorageapi.dart';
 import '../../style/colors.dart';
 
 class ProfileView extends StatefulWidget {
@@ -15,6 +22,7 @@ class ProfileView extends StatefulWidget {
 }
 
 class ProfileViewState extends State<ProfileView> {
+  late File file;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,22 +94,38 @@ class ProfileViewState extends State<ProfileView> {
                                     SizedBox(
                                       height: 10,
                                     ),
-                                    Container(
-                                      height: 135,
-                                      width: 135,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.black,
-                                          width: 0.75,
-                                        ),
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/person.png'),
-                                          fit: BoxFit.fill,
-                                        ),
-                                        shape: BoxShape.circle,
-                                        color: Colors.white,
-                                      ),
+                                    FutureBuilder(
+                                      future: _getImage(context,
+                                          "${FirebaseAuth.instance.currentUser!.uid}"),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<Widget> snapshot) {
+                                        if (snapshot.data.toString() ==
+                                            "Scaffold") {
+                                          return Container(
+                                            height: 135,
+                                            width: 135,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.black,
+                                                width: 0.75,
+                                              ),
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/images/person.png'),
+                                                fit: BoxFit.fill,
+                                              ),
+                                              shape: BoxShape.circle,
+                                              color: Colors.white,
+                                            ),
+                                          );
+                                        } else {
+                                          return Container(
+                                            height: 135,
+                                            width: 135,
+                                            child: snapshot.data,
+                                          );
+                                        }
+                                      },
                                     ),
                                     SizedBox(
                                       height: 10,
@@ -137,15 +161,7 @@ class ProfileViewState extends State<ProfileView> {
                                 children: [
                                   ElevatedButton(
                                     style: raisedButtonStyle,
-                                    onPressed: () {
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //     builder: (context) =>
-                                      //         TicketsHistory(),
-                                      //   ),
-                                      // );
-                                    },
+                                    onPressed: () {},
                                     child: Wrap(
                                       crossAxisAlignment:
                                           WrapCrossAlignment.center,
@@ -185,7 +201,53 @@ class ProfileViewState extends State<ProfileView> {
                                 children: [
                                   ElevatedButton(
                                     style: raisedButtonStyle,
-                                    onPressed: () async {},
+                                    onPressed: () async {
+                                      XFile? result;
+
+                                      _openGallery() async {
+                                        result = await ImagePicker().pickImage(
+                                            maxHeight: 100,
+                                            source: ImageSource.gallery);
+                                        setState(() {});
+                                      }
+
+                                      await _openGallery();
+                                      final path = result?.path;
+                                      setState(() {
+                                        file = File(path!);
+                                      });
+                                      print(file);
+                                      getFilePath();
+                                      if (path != null) {
+                                        saveFile(path);
+                                        Image image = Image.file(File(path));
+                                      }
+
+                                      //readFile();
+
+                                      final destination =
+                                          "${FirebaseAuth.instance.currentUser!.uid}";
+                                      FirebaseApi.uploadFile(destination, file);
+
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            Future.delayed(Duration(seconds: 1),
+                                                () {
+                                              Navigator.of(context).popUntil(
+                                                  (route) => route.isFirst);
+                                            });
+                                            return AlertDialog(
+                                              title: Text(
+                                                'Avatar changed!',
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            );
+                                          });
+                                      await Future.delayed(
+                                          Duration(seconds: 1));
+                                      Navigator.pop(context);
+                                    },
                                     child: Wrap(
                                       crossAxisAlignment:
                                           WrapCrossAlignment.center,
@@ -257,5 +319,49 @@ class ProfileViewState extends State<ProfileView> {
                 }
               }),
         ));
+  }
+
+  Future<Widget> _getImage(BuildContext context, String imageName) async {
+    late Widget image;
+    try {
+      await FirebaseApi.loadImage(context, imageName).then((value) {
+        image = Container(
+          height: 135,
+          width: 135,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.black,
+              width: 0.75,
+            ),
+            image: DecorationImage(
+              image: NetworkImage(value.toString()),
+              fit: BoxFit.fill,
+            ),
+            shape: BoxShape.circle,
+            color: Colors.white,
+          ),
+        );
+      });
+    } catch (err) {
+      return Scaffold();
+    }
+    return image;
+  }
+
+  Future<String> getFilePath() async {
+    Directory appDocumentsDirectory =
+        await getApplicationDocumentsDirectory(); // 1
+    String appDocumentsPath = appDocumentsDirectory.path; // 2
+    String filePath = '$appDocumentsPath/avatar.png'; // 3
+    print(filePath);
+    return filePath;
+  }
+
+  void saveFile(String path) async {
+    File file = File(await getFilePath()); // 1
+    File imagefile = File(path); //convert Path to File
+    Uint8List imagebytes = await imagefile.readAsBytes(); //convert to bytes
+    String base64string = base64.encode(imagebytes); //conve
+    file.writeAsBytes(imagebytes);
   }
 }

@@ -41,11 +41,24 @@ class HamburgerMenu extends StatelessWidget {
                     accountEmail: Text("${user.get('email')}"),
                     currentAccountPicture: CircleAvatar(
                       child: ClipOval(
-                        child: Image.asset(
-                          'assets/images/person.png',
-                          width: 90,
-                          height: 90,
-                          fit: BoxFit.fill,
+                        child: FutureBuilder(
+                          future: _getImage(context,
+                              "${FirebaseAuth.instance.currentUser!.uid}"),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<Widget> snapshot) {
+                            if (snapshot.data.toString() == "Scaffold") {
+                              return Image.asset(
+                                'assets/images/person.png',
+                                width: 90,
+                                height: 90,
+                                fit: BoxFit.fill,
+                              );
+                            } else {
+                              return Container(
+                                child: snapshot.data,
+                              );
+                            }
+                          },
                         ),
                       ),
                     ),
@@ -108,5 +121,22 @@ class HamburgerMenu extends StatelessWidget {
             return Container();
           }
         });
+  }
+
+  Future<Widget> _getImage(BuildContext context, String imageName) async {
+    late Image image;
+    try {
+      await FirebaseApi.loadImage(context, imageName).then((value) {
+        image = Image.network(
+          value.toString(),
+          width: 90,
+          height: 90,
+          fit: BoxFit.fill,
+        );
+      });
+    } catch (err) {
+      return Scaffold();
+    }
+    return image;
   }
 }
