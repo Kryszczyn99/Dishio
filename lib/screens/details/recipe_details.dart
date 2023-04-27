@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../navbars/hamburgermenu.dart';
 import '../../services/database.dart';
@@ -20,7 +22,7 @@ class RecipeDetails extends StatefulWidget {
 class _RecipeDetailsState extends State<RecipeDetails> {
   final _controller = PageController();
   int _currentPage = 0;
-
+  var uuid = Uuid();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +35,21 @@ class _RecipeDetailsState extends State<RecipeDetails> {
           "Dishio",
           style: TextStyle(fontSize: 34, fontStyle: FontStyle.italic),
         ),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                child: const Text('Zgłoś przepis'),
+                value: 'report_recipe',
+              ),
+            ],
+            onSelected: (value) {
+              if (value == 'report_recipe') {
+                //tutaj do zrobienia reportowanie przepisu
+              }
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
           child: Container(
@@ -91,6 +108,210 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                                 fontSize: 16.0,
                                 fontFamily: 'Pacifico',
                               ),
+                            ),
+                            Spacer(),
+                            Row(
+                              children: [
+                                StreamBuilder(
+                                    stream: DatabaseService(uid: '')
+                                        .likeCollection
+                                        .where('user_id',
+                                            isEqualTo: FirebaseAuth
+                                                .instance.currentUser!.uid)
+                                        .where('recipe_id',
+                                            isEqualTo: widget.id)
+                                        .snapshots(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<QuerySnapshot>
+                                            snapshot2) {
+                                      if (!snapshot2.hasData) {
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                      return StreamBuilder(
+                                        stream: DatabaseService(uid: '')
+                                            .likeCollection
+                                            .where('recipe_id',
+                                                isEqualTo: widget.id)
+                                            .snapshots(),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<QuerySnapshot>
+                                                snapshot3) {
+                                          if (!snapshot3.hasData) {
+                                            return Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+                                          int len = 0;
+                                          for (var temp
+                                              in snapshot3.data!.docs) {
+                                            len = len + 1;
+                                          }
+                                          bool value = false;
+                                          for (var temp
+                                              in snapshot2.data!.docs) {
+                                            if (temp.get('user_id') ==
+                                                    FirebaseAuth.instance
+                                                        .currentUser!.uid &&
+                                                temp.get('recipe_id') ==
+                                                    widget.id) value = true;
+                                          }
+                                          if (value == true) {
+                                            return TextButton.icon(
+                                              onPressed: () async {
+                                                await DatabaseService(uid: '')
+                                                    .cancelLike(
+                                                        FirebaseAuth.instance
+                                                            .currentUser!.uid,
+                                                        widget.id);
+                                              },
+                                              icon: Icon(
+                                                Icons.thumb_up,
+                                              ),
+                                              label: Text(
+                                                "$len",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontStyle:
+                                                        FontStyle.italic),
+                                              ),
+                                            );
+                                          }
+                                          return TextButton.icon(
+                                            onPressed: () async {
+                                              var generated_id = uuid.v4();
+                                              await DatabaseService(uid: '')
+                                                  .giveLike(
+                                                      FirebaseAuth.instance
+                                                          .currentUser!.uid,
+                                                      generated_id,
+                                                      widget.id);
+                                              await DatabaseService(uid: '')
+                                                  .cancelDisLike(
+                                                      FirebaseAuth.instance
+                                                          .currentUser!.uid,
+                                                      widget.id);
+                                            },
+                                            icon: Icon(
+                                              Icons.thumb_up,
+                                              color: Colors.black,
+                                            ),
+                                            label: Text(
+                                              "$len",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black,
+                                                  fontStyle: FontStyle.italic),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    }),
+                              ],
+                            ),
+                            SizedBox(width: 16.0),
+                            Row(
+                              children: [
+                                StreamBuilder(
+                                    stream: DatabaseService(uid: '')
+                                        .dislikeCollection
+                                        .where('user_id',
+                                            isEqualTo: FirebaseAuth
+                                                .instance.currentUser!.uid)
+                                        .where('recipe_id',
+                                            isEqualTo: widget.id)
+                                        .snapshots(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<QuerySnapshot>
+                                            snapshot2) {
+                                      if (!snapshot2.hasData) {
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                      return StreamBuilder(
+                                        stream: DatabaseService(uid: '')
+                                            .dislikeCollection
+                                            .where('recipe_id',
+                                                isEqualTo: widget.id)
+                                            .snapshots(),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<QuerySnapshot>
+                                                snapshot3) {
+                                          if (!snapshot3.hasData) {
+                                            return Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+                                          int len = 0;
+                                          for (var temp
+                                              in snapshot3.data!.docs) {
+                                            len = len + 1;
+                                          }
+                                          bool value = false;
+                                          for (var temp
+                                              in snapshot2.data!.docs) {
+                                            if (temp.get('user_id') ==
+                                                    FirebaseAuth.instance
+                                                        .currentUser!.uid &&
+                                                temp.get('recipe_id') ==
+                                                    widget.id) value = true;
+                                          }
+                                          if (value == true) {
+                                            return TextButton.icon(
+                                              onPressed: () async {
+                                                await DatabaseService(uid: '')
+                                                    .cancelDisLike(
+                                                        FirebaseAuth.instance
+                                                            .currentUser!.uid,
+                                                        widget.id);
+                                              },
+                                              icon: Icon(
+                                                Icons.thumb_down,
+                                              ),
+                                              label: Text(
+                                                "$len",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontStyle:
+                                                        FontStyle.italic),
+                                              ),
+                                            );
+                                          }
+                                          return TextButton.icon(
+                                            onPressed: () async {
+                                              var generated_id = uuid.v4();
+                                              await DatabaseService(uid: '')
+                                                  .giveDisLike(
+                                                      FirebaseAuth.instance
+                                                          .currentUser!.uid,
+                                                      generated_id,
+                                                      widget.id);
+                                              await DatabaseService(uid: '')
+                                                  .cancelLike(
+                                                      FirebaseAuth.instance
+                                                          .currentUser!.uid,
+                                                      widget.id);
+                                            },
+                                            icon: Icon(
+                                              Icons.thumb_down,
+                                              color: Colors.black,
+                                            ),
+                                            label: Text(
+                                              "$len",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black,
+                                                  fontStyle: FontStyle.italic),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    }),
+                              ],
                             ),
                           ],
                         ),

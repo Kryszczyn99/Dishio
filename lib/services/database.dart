@@ -13,6 +13,10 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('ingredientsTable');
   final CollectionReference recipeCollection =
       FirebaseFirestore.instance.collection('recipesTable');
+  final CollectionReference likeCollection =
+      FirebaseFirestore.instance.collection('likesTable');
+  final CollectionReference dislikeCollection =
+      FirebaseFirestore.instance.collection('dislikesTable');
 
 //#1
   Future setUserInformation(String uid, String email) async {
@@ -70,5 +74,35 @@ class DatabaseService {
       'product_desp': product_desp,
       'desp': desp,
     });
+  }
+
+  Future giveLike(String user_id, String uid, String recipe_id) async {
+    return await likeCollection
+        .doc(uid)
+        .set({'user_id': user_id, 'recipe_id': recipe_id});
+  }
+
+  Future cancelLike(String user_id, String recipe_id) async {
+    var result = await likeCollection
+        .where('user_id', isEqualTo: user_id)
+        .where('recipe_id', isEqualTo: recipe_id)
+        .get();
+    await likeCollection.doc(result.docs[0].id).delete();
+    return true;
+  }
+
+  Future giveDisLike(String user_id, String uid, String recipe_id) async {
+    return await dislikeCollection
+        .doc(uid)
+        .set({'user_id': user_id, 'recipe_id': recipe_id});
+  }
+
+  Future cancelDisLike(String user_id, String recipe_id) async {
+    var result = await dislikeCollection
+        .where('user_id', isEqualTo: user_id)
+        .where('recipe_id', isEqualTo: recipe_id)
+        .get();
+    await dislikeCollection.doc(result.docs[0].id).delete();
+    return true;
   }
 }
