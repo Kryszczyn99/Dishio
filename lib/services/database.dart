@@ -73,6 +73,7 @@ class DatabaseService {
       'time': time,
       'product_desp': product_desp,
       'desp': desp,
+      'views': 0,
     });
   }
 
@@ -103,6 +104,14 @@ class DatabaseService {
         .where('recipe_id', isEqualTo: recipe_id)
         .get();
     await dislikeCollection.doc(result.docs[0].id).delete();
+    return true;
+  }
+
+  Future incrementView(String recipe_id) async {
+    var result = await recipeCollection.doc(recipe_id).get();
+    String views = result.get("views").toString();
+    int newViews = int.parse(views) + 1;
+    await recipeCollection.doc(recipe_id).update({'views': newViews});
     return true;
   }
 }

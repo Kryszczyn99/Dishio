@@ -120,7 +120,9 @@ class _HomeState extends State<Home> {
                                           Expanded(
                                             flex: 1,
                                             child: GestureDetector(
-                                              onTap: () {
+                                              onTap: () async {
+                                                await DatabaseService(uid: '')
+                                                    .incrementView(document.id);
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
@@ -225,7 +227,9 @@ class _HomeState extends State<Home> {
                                           Expanded(
                                             flex: 1,
                                             child: GestureDetector(
-                                              onTap: () {
+                                              onTap: () async {
+                                                await DatabaseService(uid: '')
+                                                    .incrementView(document.id);
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(

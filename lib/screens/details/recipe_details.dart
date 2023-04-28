@@ -15,6 +15,7 @@ class RecipeDetails extends StatefulWidget {
   const RecipeDetails({required this.id});
 
   final String id;
+
   @override
   State<RecipeDetails> createState() => _RecipeDetailsState();
 }
@@ -23,6 +24,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
   final _controller = PageController();
   int _currentPage = 0;
   var uuid = Uuid();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -182,6 +184,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                                           return TextButton.icon(
                                             onPressed: () async {
                                               var generated_id = uuid.v4();
+
                                               await DatabaseService(uid: '')
                                                   .giveLike(
                                                       FirebaseAuth.instance
