@@ -322,13 +322,9 @@ class _HomeState extends State<Home> {
                             padding: EdgeInsets.all(8.0),
                             child: ElevatedButton(
                               onPressed: () {
-                                print('Kliknięto przycisk: $button');
-
                                 setState(() {
                                   _currentCategories = button;
                                 });
-
-                                print(_currentCategories);
                               },
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.white,

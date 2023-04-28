@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dishio/screens/home/home.dart';
 import 'package:dishio/screens/profile/profile.dart';
+import 'package:dishio/screens/searching/searching.dart';
 import 'package:dishio/services/auth.dart';
 import 'package:dishio/services/database.dart';
 import 'package:dishio/storage/firebasestorageapi.dart';
@@ -100,7 +101,7 @@ class HamburgerMenu extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ProfileView(),
+                          builder: (context) => SearchScreen(),
                         ),
                       );
                     },
