@@ -12,9 +12,10 @@ import '../../services/firebasestorageapi.dart';
 import '../../style/colors.dart';
 
 class RecipeDetails extends StatefulWidget {
-  const RecipeDetails({required this.id});
+  const RecipeDetails({required this.id, required this.admin});
 
   final String id;
+  final bool admin;
 
   @override
   State<RecipeDetails> createState() => _RecipeDetailsState();
@@ -24,6 +25,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
   final _controller = PageController();
   int _currentPage = 0;
   String reportDesp = "";
+
   var uuid = Uuid();
 
   @override
@@ -45,6 +47,11 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                 child: const Text('Zgłoś przepis'),
                 value: 'report_recipe',
               ),
+              if (widget.admin)
+                PopupMenuItem(
+                  child: const Text('Usuń przepis (admin)'),
+                  value: 'delete_recipe',
+                ),
             ],
             onSelected: (value) {
               if (value == 'report_recipe') {
@@ -102,6 +109,51 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                           ),
                         ),
                       ],
+                    );
+                  },
+                );
+              }
+              if (value == 'delete_recipe' && widget.admin == true) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Usuń przepis'),
+                      content: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                                'Czy na pewno chcesz usunąć ten przepis kulinarny??'),
+                            SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text("Anuluj"),
+                                ),
+                                SizedBox(width: 10),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.red,
+                                    onPrimary: Colors.white,
+                                  ),
+                                  onPressed: () async {
+                                    await DatabaseService(uid: '')
+                                        .deleteRecipe(widget.id);
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Usuń'),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   },
                 );

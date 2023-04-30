@@ -186,4 +186,28 @@ class DatabaseService {
   Future reportDone(String uid) async {
     return await reportCollection.doc(uid).delete();
   }
+
+  Future checkIfAdmin(String user_id) async {
+    var result = await userCollection.where('userId', isEqualTo: user_id).get();
+    String role = result.docs[0].get('role').toString();
+    if (role == "admin") return true;
+    return false;
+  }
+
+  Future deleteRecipe(String uid) async {
+    var res2 = await likeCollection.where("recipe_id", isEqualTo: uid).get();
+    for (var temp2 in res2.docs) {
+      await likeCollection.doc(temp2.id).delete();
+    }
+    res2 = await dislikeCollection.where("recipe_id", isEqualTo: uid).get();
+    for (var temp2 in res2.docs) {
+      await dislikeCollection.doc(temp2.id).delete();
+    }
+    res2 = await reportCollection.where("recipe_id", isEqualTo: uid).get();
+    for (var temp2 in res2.docs) {
+      await reportCollection.doc(temp2.id).delete();
+    }
+    await FirebaseApi.deleteFolder("images/${uid}");
+    return await recipeCollection.doc(uid).delete();
+  }
 }

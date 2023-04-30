@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dishio/screens/details/recipe_details.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -101,14 +102,20 @@ class _ReportScreenState extends State<ReportScreen> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       ElevatedButton.icon(
-                                        onPressed: () {
+                                        onPressed: () async {
+                                          bool res =
+                                              await DatabaseService(uid: '')
+                                                  .checkIfAdmin(FirebaseAuth
+                                                      .instance
+                                                      .currentUser!
+                                                      .uid);
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   RecipeDetails(
-                                                      id: document[
-                                                          'recipe_id']),
+                                                      id: document['recipe_id'],
+                                                      admin: res),
                                             ),
                                           );
                                         },

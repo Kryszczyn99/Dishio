@@ -4,6 +4,7 @@ import 'package:dishio/screens/details/recipe_details.dart';
 import 'package:dishio/screens/recipe_adding/recipe_adding.dart';
 import 'package:dishio/services/auth.dart';
 import 'package:dishio/services/database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -122,12 +123,21 @@ class _HomeState extends State<Home> {
                                               onTap: () async {
                                                 await DatabaseService(uid: '')
                                                     .incrementView(document.id);
+                                                bool res =
+                                                    await DatabaseService(
+                                                            uid: '')
+                                                        .checkIfAdmin(
+                                                            FirebaseAuth
+                                                                .instance
+                                                                .currentUser!
+                                                                .uid);
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
                                                         RecipeDetails(
-                                                            id: document.id),
+                                                            id: document.id,
+                                                            admin: res),
                                                   ),
                                                 );
                                               },
@@ -229,12 +239,21 @@ class _HomeState extends State<Home> {
                                               onTap: () async {
                                                 await DatabaseService(uid: '')
                                                     .incrementView(document.id);
+                                                bool res =
+                                                    await DatabaseService(
+                                                            uid: '')
+                                                        .checkIfAdmin(
+                                                            FirebaseAuth
+                                                                .instance
+                                                                .currentUser!
+                                                                .uid);
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
                                                         RecipeDetails(
-                                                            id: document.id),
+                                                            id: document.id,
+                                                            admin: res),
                                                   ),
                                                 );
                                               },
