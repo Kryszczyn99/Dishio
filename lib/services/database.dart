@@ -1,5 +1,6 @@
 import 'package:dishio/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dishio/services/firebasestorageapi.dart';
 import 'package:image_picker/image_picker.dart';
 
 class DatabaseService {
@@ -17,6 +18,8 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('likesTable');
   final CollectionReference dislikeCollection =
       FirebaseFirestore.instance.collection('dislikesTable');
+  final CollectionReference reportCollection =
+      FirebaseFirestore.instance.collection('reportsTable');
 
 //#1
   Future setUserInformation(String uid, String email) async {
@@ -65,7 +68,8 @@ class DatabaseService {
       String title,
       String time,
       String product_desp,
-      String desp) async {
+      String desp,
+      String user_id) async {
     return await recipeCollection.doc(uid).set({
       'category': category,
       'products': products,
@@ -74,6 +78,7 @@ class DatabaseService {
       'product_desp': product_desp,
       'desp': desp,
       'views': 0,
+      'user_id': user_id,
     });
   }
 
@@ -113,5 +118,45 @@ class DatabaseService {
     int newViews = int.parse(views) + 1;
     await recipeCollection.doc(recipe_id).update({'views': newViews});
     return true;
+  }
+
+  Future setReportInformation(
+      String report_id, String user_id, String recipe_id, String desp) async {
+    return await reportCollection
+        .doc(report_id)
+        .set({'user_id': user_id, 'recipe_id': recipe_id, 'desp': desp});
+  }
+
+  Future addCategory(String uid, String text) async {
+    return categoryCollection.doc(uid).set({
+      'name': text,
+    });
+  }
+
+  Future deleteCategory(String uid) async {
+    var result = await categoryCollection.doc(uid).get();
+    String name = result.get("name").toString();
+    var recipes =
+        await recipeCollection.where("category", isEqualTo: name).get();
+    for (var temp in recipes.docs) {
+      var res2 =
+          await likeCollection.where("recipe_id", isEqualTo: temp.id).get();
+      for (var temp2 in res2.docs) {
+        await likeCollection.doc(temp2.id).delete();
+      }
+      res2 =
+          await dislikeCollection.where("recipe_id", isEqualTo: temp.id).get();
+      for (var temp2 in res2.docs) {
+        await dislikeCollection.doc(temp2.id).delete();
+      }
+      res2 =
+          await reportCollection.where("recipe_id", isEqualTo: temp.id).get();
+      for (var temp2 in res2.docs) {
+        await reportCollection.doc(temp2.id).delete();
+      }
+      await FirebaseApi.deleteFolder("images/${temp.id}");
+      await recipeCollection.doc(temp.id).delete();
+    }
+    return await categoryCollection.doc(uid).delete();
   }
 }

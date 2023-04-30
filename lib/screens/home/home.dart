@@ -23,7 +23,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final AuthService auth = AuthService();
   ScrollController _scrollController = ScrollController();
-  List<String> _buttonNames = List.generate(11, (index) => "Index $index");
   String _currentCategories = "Wszystkie";
 
   @override

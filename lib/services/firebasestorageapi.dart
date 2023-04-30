@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dishio/services/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -16,8 +17,17 @@ class FirebaseApi {
     return await FirebaseStorage.instance.ref().child(image).getDownloadURL();
   }
 
-  static Future<dynamic> deleteFile(String image) {
-    final ref = FirebaseStorage.instance.ref().child(image);
+  static Future<dynamic> deleteFolder(String destination) async {
+    final ref = FirebaseStorage.instance.ref(destination);
+    final list = await ref.listAll();
+    for (var element in list.items) {
+      FirebaseApi.deleteFile(element.fullPath);
+    }
+    return await ref.listAll();
+  }
+
+  static Future<dynamic> deleteFile(String destination) {
+    final ref = FirebaseStorage.instance.ref(destination);
     return ref.delete();
   }
 }

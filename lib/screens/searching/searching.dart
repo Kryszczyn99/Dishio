@@ -23,6 +23,13 @@ class _SearchScreenState extends State<SearchScreen> {
       drawer: HamburgerMenu(),
       backgroundColor: MyColors.color8,
       appBar: AppBar(
+        bottom: PreferredSize(
+          child: Container(
+            color: Colors.black,
+            height: 1.0,
+          ),
+          preferredSize: Size.fromHeight(4.0),
+        ),
         backgroundColor: MyColors.color6,
         elevation: 0.0,
         centerTitle: true,

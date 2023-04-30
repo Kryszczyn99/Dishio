@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dishio/screens/admin_screens/category_add.dart';
+import 'package:dishio/screens/admin_screens/reports.dart';
+import 'package:dishio/screens/admin_screens/users.dart';
 import 'package:dishio/screens/home/home.dart';
 import 'package:dishio/screens/profile/profile.dart';
 import 'package:dishio/screens/searching/searching.dart';
@@ -26,6 +29,7 @@ class HamburgerMenu extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             var user = snapshot.data!.docs[0];
+            var role = user.get("role");
             var names;
             if (user.get('name').toString().isEmpty &&
                 user.get('surname').toString().isEmpty) {
@@ -106,6 +110,48 @@ class HamburgerMenu extends StatelessWidget {
                       );
                     },
                   ),
+                  if (role == "admin")
+                    ListTile(
+                      leading: Icon(Icons.report),
+                      title: Text("Reports"),
+                      onTap: () async {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReportScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  if (role == "admin")
+                    ListTile(
+                      leading: Icon(Icons.people),
+                      title: Text("Users Table"),
+                      onTap: () async {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UsersTableScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  if (role == "admin")
+                    ListTile(
+                      leading: Icon(Icons.add),
+                      title: Text("Add category"),
+                      onTap: () async {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CategoryAddScreen(),
+                          ),
+                        );
+                      },
+                    ),
                   ListTile(
                     leading: Icon(Icons.logout),
                     title: Text("Log out"),

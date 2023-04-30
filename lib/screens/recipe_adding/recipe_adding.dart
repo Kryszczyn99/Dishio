@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:drag_and_drop_lists/drag_and_drop_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,9 +32,8 @@ class _RecipeAddState extends State<RecipeAdd> {
   String description = "";
   String time = "";
   String title = "";
-
+  bool _isSwitched = false;
   List<XFile>? _images = [];
-
   late FirebaseStorage storage;
   late Reference ref;
 
@@ -372,16 +373,15 @@ class _RecipeAddState extends State<RecipeAdd> {
                   ),
                 ),
                 SizedBox(height: 10.0),
-                Container(
-                  width: 400,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      // Do something when the button is pressed
-                    },
-                    icon: Icon(Icons.list),
-                    label: Text('Zaprojektuj instrukcje'),
-                  ),
-                ),
+                // SwitchListTile(
+                //   title: Text('Zaprojektuj instrukcje'),
+                //   value: _isSwitched,
+                //   onChanged: (value) {
+                //     setState(() {
+                //       _isSwitched = value;
+                //     });
+                //   },
+                // ),
                 SizedBox(height: 100.0),
                 Center(
                   child: ElevatedButton(
@@ -403,7 +403,8 @@ class _RecipeAddState extends State<RecipeAdd> {
                           title,
                           time,
                           products_description,
-                          description);
+                          description,
+                          FirebaseAuth.instance.currentUser!.uid);
 
                       for (var temp in _images!) {
                         File file = File(temp.path);

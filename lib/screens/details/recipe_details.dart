@@ -23,6 +23,7 @@ class RecipeDetails extends StatefulWidget {
 class _RecipeDetailsState extends State<RecipeDetails> {
   final _controller = PageController();
   int _currentPage = 0;
+  String reportDesp = "";
   var uuid = Uuid();
 
   @override
@@ -47,7 +48,63 @@ class _RecipeDetailsState extends State<RecipeDetails> {
             ],
             onSelected: (value) {
               if (value == 'report_recipe') {
-                //tutaj do zrobienia reportowanie przepisu
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ListView(
+                      children: [
+                        AlertDialog(
+                          title: const Text("Zgłoś przepis"),
+                          content: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextFormField(
+                                  maxLines: null,
+                                  decoration: const InputDecoration(
+                                    hintText: "Wprowadź opis zgłoszenia",
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  onChanged: (text) {
+                                    setState(() {
+                                      reportDesp = text;
+                                    });
+                                  },
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("Anuluj"),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        var report_id = uuid.v4();
+                                        await DatabaseService(uid: '')
+                                            .setReportInformation(
+                                                report_id,
+                                                FirebaseAuth
+                                                    .instance.currentUser!.uid,
+                                                widget.id,
+                                                reportDesp);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("Zgłoś"),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
               }
             },
           ),
