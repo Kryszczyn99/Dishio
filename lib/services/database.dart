@@ -159,4 +159,31 @@ class DatabaseService {
     }
     return await categoryCollection.doc(uid).delete();
   }
+
+  Future becomeUser(String uid) async {
+    var result = await userCollection.where('userId', isEqualTo: uid).get();
+
+    return await userCollection.doc(uid).update({
+      'name': result.docs[0].get('name'),
+      'surname': result.docs[0].get('surname'),
+      'userId': uid,
+      'email': result.docs[0].get('email'),
+      'role': 'user',
+    });
+  }
+
+  Future becomeAdmin(String uid) async {
+    var result = await userCollection.where('userId', isEqualTo: uid).get();
+    return await userCollection.doc(uid).update({
+      'name': result.docs[0].get('name'),
+      'surname': result.docs[0].get('surname'),
+      'userId': uid,
+      'email': result.docs[0].get('email'),
+      'role': 'admin',
+    });
+  }
+
+  Future reportDone(String uid) async {
+    return await reportCollection.doc(uid).delete();
+  }
 }
