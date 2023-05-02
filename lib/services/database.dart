@@ -210,4 +210,9 @@ class DatabaseService {
     await FirebaseApi.deleteFolder("images/${uid}");
     return await recipeCollection.doc(uid).delete();
   }
+
+  Future<int> countLikes(String uid) async {
+    var res = await likeCollection.where("recipe_id", isEqualTo: uid).get();
+    return res.size;
+  }
 }

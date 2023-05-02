@@ -4,6 +4,7 @@ import 'package:dishio/screens/admin_screens/reports.dart';
 import 'package:dishio/screens/admin_screens/users.dart';
 import 'package:dishio/screens/home/home.dart';
 import 'package:dishio/screens/profile/profile.dart';
+import 'package:dishio/screens/searching/dish_finder.dart';
 import 'package:dishio/screens/searching/searching.dart';
 import 'package:dishio/services/auth.dart';
 import 'package:dishio/services/database.dart';
@@ -106,6 +107,19 @@ class HamburgerMenu extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => SearchScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.dinner_dining_rounded),
+                    title: Text("Dish finder"),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DishFinderScreen(),
                         ),
                       );
                     },
