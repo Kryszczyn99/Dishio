@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dishio/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dishio/services/firebasestorageapi.dart';
@@ -23,13 +25,16 @@ class DatabaseService {
 
 //#1
   Future setUserInformation(String uid, String email) async {
-    return await userCollection.doc(uid).set({
+    await userCollection.doc(uid).set({
       'name': "",
       'surname': "",
       'userId': uid,
       'email': email,
       'role': 'user',
+      'credibility': 0
     });
+    await updateCredibility(uid);
+    return true;
   }
 
 //#2
@@ -83,9 +88,11 @@ class DatabaseService {
   }
 
   Future giveLike(String user_id, String uid, String recipe_id) async {
-    return await likeCollection
+    await likeCollection
         .doc(uid)
         .set({'user_id': user_id, 'recipe_id': recipe_id});
+    await updateCredibility(user_id);
+    return true;
   }
 
   Future cancelLike(String user_id, String recipe_id) async {
@@ -94,13 +101,16 @@ class DatabaseService {
         .where('recipe_id', isEqualTo: recipe_id)
         .get();
     await likeCollection.doc(result.docs[0].id).delete();
+    await updateCredibility(user_id);
     return true;
   }
 
   Future giveDisLike(String user_id, String uid, String recipe_id) async {
-    return await dislikeCollection
+    await dislikeCollection
         .doc(uid)
         .set({'user_id': user_id, 'recipe_id': recipe_id});
+    await updateCredibility(user_id);
+    return true;
   }
 
   Future cancelDisLike(String user_id, String recipe_id) async {
@@ -109,14 +119,17 @@ class DatabaseService {
         .where('recipe_id', isEqualTo: recipe_id)
         .get();
     await dislikeCollection.doc(result.docs[0].id).delete();
+    await updateCredibility(user_id);
     return true;
   }
 
   Future incrementView(String recipe_id) async {
     var result = await recipeCollection.doc(recipe_id).get();
     String views = result.get("views").toString();
+    String user_id = result.get("user_id").toString();
     int newViews = int.parse(views) + 1;
     await recipeCollection.doc(recipe_id).update({'views': newViews});
+    await updateCredibility(user_id);
     return true;
   }
 
@@ -157,6 +170,7 @@ class DatabaseService {
       await FirebaseApi.deleteFolder("images/${temp.id}");
       await recipeCollection.doc(temp.id).delete();
     }
+
     return await categoryCollection.doc(uid).delete();
   }
 
@@ -208,11 +222,39 @@ class DatabaseService {
       await reportCollection.doc(temp2.id).delete();
     }
     await FirebaseApi.deleteFolder("images/${uid}");
-    return await recipeCollection.doc(uid).delete();
+    var res = await recipeCollection.doc(uid).get();
+    String user_id = res.get("user_id");
+    await recipeCollection.doc(uid).delete();
+    await updateCredibility(user_id);
+    return true;
   }
 
   Future<int> countLikes(String uid) async {
     var res = await likeCollection.where("recipe_id", isEqualTo: uid).get();
     return res.size;
+  }
+
+  Future<int> countDisLikes(String uid) async {
+    var res = await dislikeCollection.where("recipe_id", isEqualTo: uid).get();
+    return res.size;
+  }
+
+  Future updateCredibility(String user_id) async {
+    int views = 0;
+    int likes = 0;
+    int dislikes = 0;
+    var recipes =
+        await recipeCollection.where('user_id', isEqualTo: user_id).get();
+    for (var temp in recipes.docs) {
+      int current_v = temp.get("views");
+      views = views + current_v;
+      var current_likes = await countLikes(temp.id);
+      var current_dislikes = await countDisLikes(temp.id);
+      likes = likes + current_likes;
+      dislikes = dislikes + current_dislikes;
+    }
+    double w = (log(views + 1) / ln10) + sqrt(likes + 1) - sqrt(dislikes + 1);
+    await userCollection.doc(user_id).update({'credibility': w});
+    return true;
   }
 }

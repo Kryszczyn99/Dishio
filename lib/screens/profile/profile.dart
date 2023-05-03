@@ -161,7 +161,11 @@ class ProfileViewState extends State<ProfileView> {
                                 children: [
                                   ElevatedButton(
                                     style: raisedButtonStyle,
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await DatabaseService(uid: '')
+                                          .updateCredibility(FirebaseAuth
+                                              .instance.currentUser!.uid);
+                                    },
                                     child: Wrap(
                                       crossAxisAlignment:
                                           WrapCrossAlignment.center,

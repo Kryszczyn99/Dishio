@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dishio/screens/details/recipe_details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -217,7 +219,6 @@ class _SearchScreenState extends State<SearchScreen> {
                         String title = document['title'];
                         String time = document['time'];
                         String category = document['category'];
-                        print(category);
                         if (searchText != "") {
                           bool res = title
                               .toLowerCase()
