@@ -413,6 +413,20 @@ class _RecipeAddState extends State<RecipeAdd> {
                         await imageRef.putFile(file);
                         String imageUrl = await imageRef.getDownloadURL();
                       }
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Pomyślnie dodano przepis"),
+                          );
+                        },
+                      );
+
+// Cofnij do poprzedniego ekranu po 2 sekundach
+                      Future.delayed(Duration(seconds: 2), () {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      });
                     },
                     child: Text(
                       'Dodaj przepis',

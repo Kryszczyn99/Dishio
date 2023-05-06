@@ -157,7 +157,7 @@ class EditDataState extends State<EditData> {
                             );
                           }
                         },
-                        child: Text('Save data'),
+                        child: Text('Zapisz dane'),
                       ),
                       const SizedBox(
                         height: 40.0,
