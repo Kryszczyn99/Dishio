@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../services/auth.dart';
 import '../../services/database.dart';
@@ -22,6 +23,7 @@ class ProfileView extends StatefulWidget {
 }
 
 class ProfileViewState extends State<ProfileView> {
+  var uuid = Uuid();
   late File file;
   @override
   Widget build(BuildContext context) {
@@ -163,8 +165,16 @@ class ProfileViewState extends State<ProfileView> {
                                     style: raisedButtonStyle,
                                     onPressed: () async {
                                       await DatabaseService(uid: '')
-                                          .updateCredibility(FirebaseAuth
-                                              .instance.currentUser!.uid);
+                                          .incrementStatsForCategory(
+                                              FirebaseAuth
+                                                  .instance.currentUser!.uid,
+                                              "Makarony");
+                                      // var uid = uuid.v4();
+                                      // await DatabaseService(uid: '')
+                                      //     .createStatsForUser(
+                                      //         FirebaseAuth
+                                      //             .instance.currentUser!.uid,
+                                      //         uid);
                                     },
                                     child: Wrap(
                                       crossAxisAlignment:

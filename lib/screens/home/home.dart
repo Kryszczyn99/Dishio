@@ -90,6 +90,7 @@ class _HomeState extends State<Home> {
                                 children: snapshot2.data!.docs.map((document) {
                                   String title = document['title'];
                                   String time = document['time'];
+                                  String category = document['category'];
                                   return Column(children: [
                                     SizedBox(
                                       height: 30,
@@ -121,6 +122,11 @@ class _HomeState extends State<Home> {
                                             flex: 1,
                                             child: GestureDetector(
                                               onTap: () async {
+                                                await DatabaseService(uid: '')
+                                                    .incrementStatsForCategory(
+                                                        FirebaseAuth.instance
+                                                            .currentUser!.uid,
+                                                        category);
                                                 await DatabaseService(uid: '')
                                                     .incrementView(document.id);
                                                 bool res =
@@ -206,6 +212,7 @@ class _HomeState extends State<Home> {
                                 children: snapshot2.data!.docs.map((document) {
                                   String title = document['title'];
                                   String time = document['time'];
+                                  String category = document['category'];
                                   return Column(children: [
                                     SizedBox(
                                       height: 30,
@@ -238,6 +245,11 @@ class _HomeState extends State<Home> {
                                             child: GestureDetector(
                                               onTap: () async {
                                                 await DatabaseService(uid: '')
+                                                    .incrementStatsForCategory(
+                                                        FirebaseAuth.instance
+                                                            .currentUser!.uid,
+                                                        category);
+                                                await DatabaseService(uid: '')
                                                     .incrementView(document.id);
                                                 bool res =
                                                     await DatabaseService(
@@ -247,6 +259,7 @@ class _HomeState extends State<Home> {
                                                                 .instance
                                                                 .currentUser!
                                                                 .uid);
+
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(

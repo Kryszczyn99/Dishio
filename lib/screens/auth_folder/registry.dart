@@ -2,7 +2,11 @@ import 'package:dishio/screens/home/home.dart';
 import 'package:dishio/screens/profile/editing.dart';
 import 'package:dishio/services/auth.dart';
 import 'package:dishio/style/colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
+
+import '../../services/database.dart';
 
 class Register extends StatefulWidget {
   //const Register({Key? key}) : super(key: key);
@@ -14,6 +18,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  var uuid = Uuid();
   final AuthService authService = AuthService();
   final _formKey = GlobalKey<FormState>();
   String email = '';
@@ -157,6 +162,10 @@ class _RegisterState extends State<Register> {
                           if (resValue == null) {
                             setState(
                                 () => err = 'Give valid email or password');
+                          } else {
+                            var uid = uuid.v4();
+                            await DatabaseService(uid: '').createStatsForUser(
+                                FirebaseAuth.instance.currentUser!.uid, uid);
                           }
                         }
                       },

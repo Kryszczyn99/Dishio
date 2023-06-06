@@ -22,7 +22,8 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('dislikesTable');
   final CollectionReference reportCollection =
       FirebaseFirestore.instance.collection('reportsTable');
-
+  final CollectionReference statsCollection =
+      FirebaseFirestore.instance.collection('statsTable');
 //#1
   Future setUserInformation(String uid, String email) async {
     await userCollection.doc(uid).set({
@@ -256,5 +257,32 @@ class DatabaseService {
     double w = (log(views + 1) / ln10) + sqrt(likes + 1) - sqrt(dislikes + 1);
     await userCollection.doc(user_id).update({'credibility': w});
     return true;
+  }
+
+  Future createStatsForUser(String user_id, String stat_id) async {
+    var res = await categoryCollection.get();
+    var lista = [];
+    for (var temp in res.docs) {
+      var nazwa = temp.get("name").toString();
+      if (nazwa != "Wszystkie") {
+        lista.add(nazwa);
+      }
+    }
+    var data = <String, int>{};
+    for (var element in lista) {
+      data[element] = 0;
+    }
+    await statsCollection.doc(stat_id).set({'user_id': user_id, 'stats': data});
+  }
+
+  Future incrementStatsForCategory(String user_id, String category) async {
+    var res = await statsCollection.where("user_id", isEqualTo: user_id).get();
+    print(res);
+    for (var temp in res.docs) {
+      Map<String, dynamic> data = temp.get("stats");
+      var value = data[category];
+      data[category] = value + 1;
+      await statsCollection.doc(temp.id).update({'stats': data});
+    }
   }
 }
